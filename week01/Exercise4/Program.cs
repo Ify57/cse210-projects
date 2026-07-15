@@ -23,17 +23,13 @@ class Program
                 break;
             }          
         }
+        numbers.Remove(0);
         int sumed = numbers.Sum();
         double average = numbers.Average();
         int max = numbers.Max();
         Console.WriteLine($"The sum is { sumed}");
         Console.WriteLine($"The Average is { average}");
         Console.WriteLine($"The max number is { max}");
-        foreach (int item in numbers)
-        {
-            Console.WriteLine(item);
-            
-        }
        
     }
 }
