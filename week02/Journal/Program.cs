@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System;
 
 public class Entry
 {
@@ -181,3 +182,21 @@ class Program
         }
     }
 }
+// public class Program
+// {
+//     // member variables
+//     public int _value;
+//     public int _age;
+//     public string _firstname;
+
+//     // methods/function
+//     public void ValueAndAge()
+//     {
+//         Console.WriteLine($"my value is {_value} am {_age} years old");
+//     }
+//     public void Firstname()
+//     {
+//         Console.WriteLine($"and my nam is {_firstname}");
+//     }
+//     Program pro = new Program();
+// }
