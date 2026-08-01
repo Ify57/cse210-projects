@@ -1,127 +1,177 @@
 using System;
 using System.Collections.Generic;
 
-class Comment
+// Product Class
+class Product
 {
     private string _name;
-    private string _text;
+    private string _productId;
+    private double _price;
+    private int _quantity;
 
-    public Comment(string name, string text)
+    public Product(string name, string productId, double price, int quantity)
     {
         _name = name;
-        _text = text;
+        _productId = productId;
+        _price = price;
+        _quantity = quantity;
     }
 
-    public string GetName()
+    public double GetTotalCost()
     {
-        return _name;
+        return _price * _quantity;
     }
 
-    public string GetText()
+    public string GetPackingInfo()
     {
-        return _text;
+        return $"{_name} (ID: {_productId})";
     }
 }
 
-class Video
+// Address Class
+class Address
 {
-    private string _title;
-    private string _author;
-    private int _length;
-    private List<Comment> _comments = new List<Comment>();
+    private string _street;
+    private string _city;
+    private string _state;
+    private string _country;
 
-    public Video(string title, string author, int length)
+    public Address(string street, string city, string state, string country)
     {
-        _title = title;
-        _author = author;
-        _length = length;
+        _street = street;
+        _city = city;
+        _state = state;
+        _country = country;
     }
 
-    public void AddComment(Comment comment)
+    public bool IsUSA()
     {
-        _comments.Add(comment);
+        return _country.ToUpper() == "USA";
     }
 
-    public int GetCommentCount()
+    public string GetFullAddress()
     {
-        return _comments.Count;
-    }
-
-    public string GetTitle()
-    {
-        return _title;
-    }
-
-    public string GetAuthor()
-    {
-        return _author;
-    }
-
-    public int GetLength()
-    {
-        return _length;
-    }
-
-    public List<Comment> GetComments()
-    {
-        return _comments;
+        return $"{_street}\n{_city}, {_state}\n{_country}";
     }
 }
 
+// Customer Class
+class Customer
+{
+    private string _name;
+    private Address _address;
+
+    public Customer(string name, Address address)
+    {
+        _name = name;
+        _address = address;
+    }
+
+    public bool LivesInUSA()
+    {
+        return _address.IsUSA();
+    }
+
+    public string GetShippingLabel()
+    {
+        return $"{_name}\n{_address.GetFullAddress()}";
+    }
+}
+
+// Order Class
+class Order
+{
+    private List<Product> _products = new List<Product>();
+    private Customer _customer;
+
+    public Order(Customer customer)
+    {
+        _customer = customer;
+    }
+
+    public void AddProduct(Product product)
+    {
+        _products.Add(product);
+    }
+
+    public double GetTotalPrice()
+    {
+        double total = 0;
+
+        foreach (Product product in _products)
+        {
+            total += product.GetTotalCost();
+        }
+
+        total += _customer.LivesInUSA() ? 5 : 35;
+
+        return total;
+    }
+
+    public string GetPackingLabel()
+    {
+        string label = "Packing Label\n";
+
+        foreach (Product product in _products)
+        {
+            label += product.GetPackingInfo() + "\n";
+        }
+
+        return label;
+    }
+
+    public string GetShippingLabel()
+    {
+        return "Shipping Label\n" + _customer.GetShippingLabel();
+    }
+}
+
+// Main Program
 class Program
 {
     static void Main(string[] args)
     {
-        List<Video> videos = new List<Video>();
+        // First Order (USA)
+        Address address1 = new Address(
+            "123 Main Street",
+            "New York",
+            "NY",
+            "USA");
 
-        // Video 1
-        Video video1 = new Video("How to Learn C#", "Code Academy", 1800);
-        video1.AddComment(new Comment("Alice", "Very helpful tutorial!"));
-        video1.AddComment(new Comment("Brian", "I finally understand classes."));
-        video1.AddComment(new Comment("Cindy", "Great explanation."));
-        video1.AddComment(new Comment("David", "Thanks for sharing!"));
+        Customer customer1 = new Customer("John Smith", address1);
 
-        // Video 2
-        Video video2 = new Video("Top 10 Programming Tips", "Tech World", 900);
-        video2.AddComment(new Comment("Emma", "Awesome tips."));
-        video2.AddComment(new Comment("Frank", "This improved my coding."));
-        video2.AddComment(new Comment("Grace", "Very informative."));
-        video2.AddComment(new Comment("Henry", "Looking forward to more videos."));
+        Order order1 = new Order(customer1);
 
-        // Video 3
-        Video video3 = new Video("Introduction to OOP", "Programming Hub", 1500);
-        video3.AddComment(new Comment("Isaac", "Excellent explanation."));
-        video3.AddComment(new Comment("Jane", "This made OOP easy."));
-        video3.AddComment(new Comment("Kevin", "Simple and clear."));
-        video3.AddComment(new Comment("Linda", "Best OOP tutorial!"));
+        order1.AddProduct(new Product("Laptop", "P101", 850, 1));
+        order1.AddProduct(new Product("Wireless Mouse", "P102", 25, 2));
+        order1.AddProduct(new Product("Keyboard", "P103", 45, 1));
 
-        // Video 4
-        Video video4 = new Video("GitHub for Beginners", "Dev Channel", 1200);
-        video4.AddComment(new Comment("Mike", "Exactly what I needed."));
-        video4.AddComment(new Comment("Nancy", "Very easy to follow."));
-        video4.AddComment(new Comment("Oscar", "Helped me complete my assignment."));
-        video4.AddComment(new Comment("Paula", "Thanks for the great content!"));
+        // Second Order (International)
+        Address address2 = new Address(
+            "45 King Road",
+            "Toronto",
+            "Ontario",
+            "Canada");
 
-        videos.Add(video1);
-        videos.Add(video2);
-        videos.Add(video3);
-        videos.Add(video4);
+        Customer customer2 = new Customer("Emily Johnson", address2);
 
-        foreach (Video video in videos)
-        {
-            Console.WriteLine("----------------------------------------");
-            Console.WriteLine($"Title: {video.GetTitle()}");
-            Console.WriteLine($"Author: {video.GetAuthor()}");
-            Console.WriteLine($"Length: {video.GetLength()} seconds");
-            Console.WriteLine($"Number of Comments: {video.GetCommentCount()}");
-            Console.WriteLine("Comments:");
+        Order order2 = new Order(customer2);
 
-            foreach (Comment comment in video.GetComments())
-            {
-                Console.WriteLine($"- {comment.GetName()}: {comment.GetText()}");
-            }
+        order2.AddProduct(new Product("Monitor", "P201", 300, 2));
+        order2.AddProduct(new Product("USB Cable", "P202", 15, 4));
 
-            Console.WriteLine();
-        }
+        // Display Order 1
+        Console.WriteLine("====================================");
+        Console.WriteLine("ORDER 1");
+        Console.WriteLine(order1.GetPackingLabel());
+        Console.WriteLine(order1.GetShippingLabel());
+        Console.WriteLine($"Total Price: ${order1.GetTotalPrice()}");
+
+        // Display Order 2
+        Console.WriteLine("\n====================================");
+        Console.WriteLine("ORDER 2");
+        Console.WriteLine(order2.GetPackingLabel());
+        Console.WriteLine(order2.GetShippingLabel());
+        Console.WriteLine($"Total Price: ${order2.GetTotalPrice()}");
     }
 }
